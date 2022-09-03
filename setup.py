@@ -30,7 +30,7 @@ packages = [
     "discatpy",
     "discatpy.types",
     "discatpy.enums",
-    "discatpy.internals"
+    "discatpy.internal"
 ]
 
 
