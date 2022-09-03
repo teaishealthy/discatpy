@@ -29,6 +29,7 @@ with open(get_abspath("requirements.txt"), "r") as fp:
 packages = [
     "discatpy",
     "discatpy.types",
+    "discatpy.enums"
 ]
 
 
