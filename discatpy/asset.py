@@ -57,7 +57,7 @@ class Asset:
 
     def __init__(self, client: Client, path: str, key: str, animated: bool = False):
         self.client = client
-        self.format = ".png" if not animated else ".gif"
+        self.format = ".gif" if animated else ".png"
         self.key = key
         self.animated = animated
         self.path = path.format(self.key, self.format)
@@ -93,13 +93,13 @@ class Asset:
         if size < 0:
             raise ValueError("Size parameter cannot be below 0!")
 
-        if not (size & (size - 1)) == 0:
+        if size & (size - 1) != 0:
             raise ValueError("Size parameter must be a power of 2!")
 
         if size < 16 or size > 4096:
             raise ValueError("Size parameter has to be in-between 16 and 4096!")
 
-        return self.url + f"?size={size}"
+        return f"{self.url}?size={size}"
 
     async def read(self, size: Optional[int] = None) -> bytes:
         """
@@ -115,7 +115,7 @@ class Asset:
         :type:`bytes`
             The raw bytes of the file.
         """
-        url = self.url if not size else self.with_size_as(size)
+        url = self.with_size_as(size) if size else self.url
         return await self.client.http.get_from_cdn(url)
 
     @classmethod

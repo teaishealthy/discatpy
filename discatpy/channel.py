@@ -113,23 +113,22 @@ class RawChannel(DiscordObject):
 
         if channel_type == ChannelType.DM.value:
             return DMChannel(d, client)
-        elif (
-            channel_type == ChannelType.GUILD_TEXT.value
-            or channel_type == ChannelType.GUILD_NEWS.value
-        ):
+        elif channel_type in [
+            ChannelType.GUILD_TEXT.value,
+            ChannelType.GUILD_NEWS.value,
+        ]:
             return TextChannel(d, client)
-        elif (
-            channel_type == ChannelType.GUILD_VOICE.value
-            or channel_type == ChannelType.GUILD_STAGE_VOICE.value
-        ):
+        elif channel_type in [
+            ChannelType.GUILD_VOICE.value,
+            ChannelType.GUILD_STAGE_VOICE.value,
+        ]:
             return VoiceChannel(d, client)
         # TODO: categories
 
         raise TypeError("Invalid channel dict provided")
 
     def to_dict(self) -> PartialChannelData:
-        ret_dict = PartialChannelData(id=self.id, type=self.type)
-        return ret_dict
+        return PartialChannelData(id=self.id, type=self.type)
 
 
 class GuildChannel(RawChannel):
@@ -167,7 +166,7 @@ class GuildChannel(RawChannel):
     def __init__(self, d: GuildChannelData, client):
         RawChannel.__init__(self, d, client)
 
-        if self.type == ChannelType.DM.value or self.type == ChannelType.GROUP_DM.value:
+        if self.type in [ChannelType.DM.value, ChannelType.GROUP_DM.value]:
             raise TypeError("Expecting Guild channel type, got DM channel type instead")
 
         self._guild_id: Union[MissingType, Snowflake] = d.get("guild_id", MISSING)
@@ -344,7 +343,7 @@ class TextChannel(GuildChannel, Messageable):
             self.name = name
 
         if type:
-            if not (type == ChannelType.GUILD_TEXT or type == ChannelType.GUILD_NEWS):
+            if type not in [ChannelType.GUILD_TEXT, ChannelType.GUILD_NEWS]:
                 raise TypeError(
                     "You cannot convert a Text Channel to any other channel besides a News Channel!"
                 )

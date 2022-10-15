@@ -114,10 +114,9 @@ class Messageable:
                 if len(msgs) != 100:
                     # we either hit the limit of the channel or the limit according to the parameters
                     break
-                else:
-                    if limit > 100:
-                        limit -= 100
-                    before = msgs[0].get("id")
+                if limit > 100:
+                    limit -= 100
+                before = msgs[0].get("id")
 
         for m in msgs:
             yield Message(m, self.client)

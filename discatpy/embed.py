@@ -104,13 +104,10 @@ class Embed:
         self.video = video
         self.provider = provider
         self.author = author
-        self.fields: List[EmbedFieldData] = fields if fields else []
+        self.fields: List[EmbedFieldData] = fields or []
 
     def _field_size_check(self):
-        if len(self.fields) > 25:
-            return False
-
-        return True
+        return len(self.fields) <= 25
 
     @overload
     def add_field(self, /, name: str, value: str, inline: bool = False):
@@ -163,6 +160,6 @@ class Embed:
         if self.author is not None:
             ret_dict["author"] = self.author
         if len(self.fields) > 0:
-            ret_dict["fields"] = [f for f in self.fields]
+            ret_dict["fields"] = list(self.fields)
 
         return ret_dict

@@ -134,7 +134,7 @@ class Dispatcher:
         if not asyncio.iscoroutinefunction(func):
             raise TypeError("Function provided is not a coroutine.")
 
-        event_name = func.__name__ if not name else name
+        event_name = name or func.__name__
         self.events[event_name] = func
 
     def remove_event(self, name: str):
@@ -177,7 +177,7 @@ class Dispatcher:
         one_shot: :type:`bool` = `False`
             If this listener should be deleted or not.
         """
-        event_name = func.__name__ if not name else name
+        event_name = name or func.__name__
 
         if event_name in self.events:
             events_sig = inspect.signature(self.events[event_name])

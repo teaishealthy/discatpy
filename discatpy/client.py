@@ -47,11 +47,7 @@ __all__ = ("Client",)
 
 def _fetch_function_from_type(http: HTTPClient, t: Union[type, str]):
     t_name: str = ""
-    if isinstance(t, type):
-        t_name = t.__name__.lower()
-    else:
-        t_name = t.lower()
-
+    t_name = t.__name__.lower() if isinstance(t, type) else t.lower()
     if "channel" in t_name:
         return http.get_channel
     elif t_name == "guild":

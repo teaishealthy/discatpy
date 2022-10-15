@@ -114,7 +114,7 @@ def _get_user_agent():
 
 def _calculate_ratelimit_delta(reset_timestamp: float) -> float:
     now = datetime.datetime.now()
-    reset = datetime.datetime.fromtimestamp(float(reset_timestamp))
+    reset = datetime.datetime.fromtimestamp(reset_timestamp)
     return (reset - now).total_seconds()
 
 
@@ -127,11 +127,7 @@ def query_parameters(**parameters: Any):
         if v is MISSING:
             continue
 
-        if i == 0:
-            ret_url += f"?{k}="
-        else:
-            ret_url += f"&{k}="
-
+        ret_url += f"?{k}=" if i == 0 else f"&{k}="
         ret_url += urlquote(str(v))
 
     return ret_url
@@ -241,8 +237,6 @@ class HTTPClient:
 
             if delta <= 0:
                 _log.debug("Global ratelimit is over now. Skipping over this ratelimit.")
-                pass
-
             await asyncio.sleep(delta)
 
         ratelimited = self._bucket_ratelimits.get(bucket)
@@ -261,8 +255,6 @@ class HTTPClient:
 
                 if delta <= 0:
                     _log.debug("Bucket ratelimit is over now. Skipping over this ratelimit.")
-                    pass
-
                 await asyncio.sleep(delta)
 
         response: Optional[aiohttp.ClientResponse] = None
@@ -273,9 +265,7 @@ class HTTPClient:
                 resp_code = response.status
                 data = None
 
-                if (
-                    not resp_code == 204
-                ):  # 204 means empty content, aiohttp throws an error when trying to parse empty context as json
+                if resp_code != 204:  # 204 means empty content, aiohttp throws an error when trying to parse empty context as json
                     data = await response.json(encoding="utf-8")
 
                 _bucket = response.headers.get("X-RateLimit-Bucket")

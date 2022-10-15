@@ -180,8 +180,11 @@ class Emoji(DiscordObject):
         self.id: Optional[Snowflake] = d.get("id")
         self.name: Optional[str] = d.get("name")
         self._role_ids: Union[MissingType, List[Snowflake]] = (
-            [i for i in d.get("roles")] if d.get("roles", MISSING) is not MISSING else MISSING
+            list(d.get("roles"))
+            if d.get("roles", MISSING) is not MISSING
+            else MISSING
         )
+
         self.creator: Union[MissingType, User] = (
             User(d.get("user"), self.client) if d.get("user", MISSING) is not MISSING else MISSING
         )

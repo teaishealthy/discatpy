@@ -105,7 +105,7 @@ class ClientCache:
         objs = self.get(id)
         if objs and isinstance(objs, list):
             ret_obj: List[Any] = [o for o in objs if isinstance(o, t) or issubclass(o, t)]
-            return ret_obj[0] if len(ret_obj) > 0 else None
+            return ret_obj[0] if ret_obj else None
 
         return objs
 
@@ -128,10 +128,7 @@ class ClientCache:
         channel_obj: :type:`RawChannel`
             The channel object to add.
         """
-        if (
-            channel_obj.type == ChannelType.DM.value
-            or channel_obj.type == ChannelType.GROUP_DM.value
-        ):
+        if channel_obj.type in [ChannelType.DM.value, ChannelType.GROUP_DM.value]:
             # TODO: Consider removing this since all guilds the bot is in should already exist in the cache
             channel_obj._set_guild(self.client.grab(channel_obj._guild_id, "Guild"))  # type: ignore
 
@@ -173,6 +170,5 @@ class ClientCache:
             for o in objs:
                 if o == obj:
                     self._obj_cache[obj.id].pop(obj)
-        else:
-            if objs == obj:
-                self._obj_cache.pop(obj)
+        elif objs == obj:
+            self._obj_cache.pop(obj)

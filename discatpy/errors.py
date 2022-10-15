@@ -44,7 +44,7 @@ def _shorten_error_dict(d: Dict[str, Any], key: str = "") -> Dict[str, str]:
     ret_items: List[Tuple[str, str]] = []
 
     for k, val in d.items():
-        new_k = key + "." + k if key else k
+        new_k = f"{key}.{k}" if key else k
 
         if isinstance(val, dict):
             try:
@@ -84,10 +84,9 @@ class HTTPException(DisCatPyException):
         if isinstance(data, dict):
             self.code = data.get("code", 0)
             base = data.get("message", "")
-            errors = data.get("errors")
-            if errors:
+            if errors := data.get("errors"):
                 errors = _shorten_error_dict(errors)
-                helpful_msg = "In {0}: {0}".format(t for t in errors.items())
+                helpful_msg = "In {0}: {0}".format(iter(errors.items()))
                 self.text = f"{base}\n{helpful_msg}"
             else:
                 self.text = base

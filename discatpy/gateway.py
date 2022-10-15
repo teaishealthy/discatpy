@@ -140,7 +140,9 @@ class GatewayClient:
 
         For internal use only.
         """
-        identify_dict = {
+        # TODO: Presence support
+
+        return {
             "op": GatewayOpcode.IDENTIFY.value,
             "d": {
                 "token": self.client.token,
@@ -149,10 +151,6 @@ class GatewayClient:
                 "large_threshold": 250,
             },
         }
-
-        # TODO: Presence support
-
-        return identify_dict
 
     async def close(self, code: int = 1000, reconnect: bool = True):
         """
@@ -208,7 +206,7 @@ class GatewayClient:
                 # try to re-establish the connection with the Gateway
                 await self.close(code=1012)
 
-            if msg.type == aiohttp.WSMsgType.BINARY or msg.type == aiohttp.WSMsgType.TEXT:
+            if msg.type in [aiohttp.WSMsgType.BINARY, aiohttp.WSMsgType.TEXT]:
                 if msg.type == aiohttp.WSMsgType.BINARY:
                     inflated_msg = decompress_msg(self.inflator, msg.data)
                 else:
